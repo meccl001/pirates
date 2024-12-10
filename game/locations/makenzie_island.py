@@ -201,7 +201,13 @@ class NorthernShore (location.SubLocation): #sublocation 4
 
     def enter (self): 
         description = "curiosity fills you as you arrive at a shore scattered with litter."
-
+        randomnumber = random.randint(0,10)
+        occursBazooka = False
+        occursPearls = False
+        if randomnumber % 2 == 0:
+            occursBazooka = True
+        else:
+            occursPearls = True
         #Add a couple items as a demo. This is kinda awkward but students might want to complicated things.
         if self.found_by_shore != None:
             description = description + f" You see a {self.found_by_shore.name} in a pile of rubbish."
