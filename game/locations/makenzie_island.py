@@ -169,14 +169,14 @@ class RockyShore (location.SubLocation):#sub location 3
             
 class PrettyPinkBazooka(item.Item):
     def __init__(self):
-        super().__init__("pink bazooka", 175) #Note: price is in shillings (a silver coin, 20 per pound)
+        super().__init__("pink bazooka", 50) #Note: price is in shillings (a silver coin, 20 per pound)
         self.damage = (20,60)
         self.skill = "blaster"
         self.verb = "blows up"
         self.verb2 = "demolishes"
 class PrettyPinkPearls(item.Item):
     def __init__(self):
-        super().__init__('pretty pink pearls', 50)
+        super().__init__('pretty pink pearls', 175)
         self.damage = (0,0)
         lucky.LuckyDay()
         self.skill = "confidence"
