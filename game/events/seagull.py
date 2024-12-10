@@ -32,7 +32,7 @@ class Seagull (Context, event.Event):
                     self.result["message"] = "luckly, the seagulls fly off."
                 else:
                     self.result["message"] = f"{c.get_name()} is attacked by the seagulls."
-                    if (c.inflict_damage (self.seagulls, "Pecked to death by seagulls")):
+                    if (c.inflict_damage (self.seagulls, "Pecked to death by seagulls")): #steal fro here
                         self.result["message"] = f".. {c.get_name()} is pecked to death by the seagulls!"
 
         elif (verb == "feed"):

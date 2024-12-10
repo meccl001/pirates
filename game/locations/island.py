@@ -180,7 +180,7 @@ class Trees (location.SubLocation):
         self.verbs['south'] = self
         self.verbs['east'] = self
         self.verbs['west'] = self
-
+        '''TREASUREEEEE'''
         # Include a couple of items and the ability to pick them up, for demo purposes
         self.verbs['take'] = self
         self.item_in_tree = JeweledCutlass() #Treasure from this island

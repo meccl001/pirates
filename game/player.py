@@ -58,6 +58,8 @@ class Player (Context):
         self.verbs['inventory'] = self
         self.verbs['restock'] = self
         self.verbs['skills'] = self
+        self.verbs['investigate'] = self
+        self.verbs['stay'] = self
 
         self.seen = []
         for i in range (0, self.world.worldsize):
@@ -230,7 +232,7 @@ class Player (Context):
     def get_pirates (self):
         live_pirates = [p for p in self.pirates if p.health > 0]
         if len(live_pirates) <= 0 and self.gameInProgress == True:
-            self.cleanup_pirates() #calls game over
+            self.cleanup_pirates() #calls game over CALL FOR LETTER GUESSING GAME
         return live_pirates
 
     def cleanup_pirates (self):
