@@ -92,7 +92,7 @@ class Beach_with_ship (location.SubLocation): #sub location 1
         self.verbs['east'] = self
         self.verbs['west'] = self
         #self.verbs['onwards'] = self #new verb that is the only verb that will move player on to next "room"
-        self.event_chance = 20 #60
+        self.event_chance = 60 #60
         self.events.append(EncounterPinkPirates())
 
     def enter (self):
@@ -131,7 +131,7 @@ class ScaryForest (location.SubLocation): #sub location 2
         display.announce ("you're scared to proceed")
     def process_verb (self, verb, cmd_list, nouns):
         if (verb == "south"): 
-            display.announce ("you walked all around the area, pretty scary")
+            display.announce ("you walked all around the area, its surprisingly tranquil")
         elif (verb == "north"):
             display.announce ("You found a secret escape! A dirty beach is ahead")
             config.the_player.next_loc = self.main_location.locations["northern shore"]
@@ -153,10 +153,11 @@ class RockyShore (location.SubLocation):#sub location 3
         self.verbs['west'] = self
         #self.verbs['onwards'] = self #new verb that is the only verb that will move player on to next "room"
         #self.event_chance = 50
-        #self.event_append = #number guessing game where if won, treasure is granted
+        self.event_chance = 27 
+        self.events.append(EncounterPinkPirates())
     def enter (self):
         display.announce ("arrive at a rocky shore, watch your step!.")
-        display.announce ("A large assumibly scary figure approches you!!!") #maybe do this?  #turns out to be not scary
+        #display.announce ("A large assumibly scary figure approches you!!!") #maybe do this?  #turns out to be not scary
     def process_verb (self, verb, cmd_list, nouns):
         if (verb == "south" or verb == "north"):
             display.announce ("you walked all around the area, pretty rocky")
@@ -169,14 +170,14 @@ class RockyShore (location.SubLocation):#sub location 3
             
 class PrettyPinkBazooka(item.Item):
     def __init__(self):
-        super().__init__("pink bazooka", 50) #Note: price is in shillings (a silver coin, 20 per pound)
+        super().__init__("bazooka", 50) #Note: price is in shillings (a silver coin, 20 per pound)
         self.damage = (20,60)
         self.skill = "blaster"
         self.verb = "blows up"
         self.verb2 = "demolishes"
 class PrettyPinkPearls(item.Item):
     def __init__(self):
-        super().__init__('pretty pink pearls', 175)
+        super().__init__('pearls', 175)
         self.damage = (0,0)
         lucky.LuckyDay()
         self.skill = "confidence"
@@ -185,9 +186,9 @@ class PrettyPinkPearls(item.Item):
 
 class NorthernShore (location.SubLocation): #sublocation 4
     def __init__ (self, m):
-        super().__init__(m) #no event on this "room", only treasure found
-        self.name = "Northern Shore" #the treasure found code can be found in island.py where they get to eat the monkeys 
-        self.verbs['north'] = self #and when there is things found in trees
+        super().__init__(m)  
+        self.name = "Northern Shore"  
+        self.verbs['north'] = self 
         self.verbs['south'] = self
         self.verbs['east'] = self
         self.verbs['west'] = self
@@ -198,28 +199,24 @@ class NorthernShore (location.SubLocation): #sublocation 4
        #do a random thing, no ,atter what the variable should exist (=none)
         self.found_by_shore = PrettyPinkBazooka()
         self.found_in_litter = PrettyPinkPearls()
+        
 
     def enter (self): 
-        description = "curiosity fills you as you arrive at a shore scattered with litter."
-        randomnumber = random.randint(0,10)
-        occursBazooka = False
-        occursPearls = False
-        if randomnumber % 2 == 0:
-            occursBazooka = True
-        else:
-            occursPearls = True
-        #Add a couple items as a demo. This is kinda awkward but students might want to complicated things.
-        if self.found_by_shore != None:
-            description = description + f" You see a {self.found_by_shore.name} in a pile of rubbish."
-        if self.found_in_litter != None:
-            description = description + f" You see {self.found_in_litter.name} in an abandoned sand castle."
+        description = "curiosity fills you as you arrive at a shore scattered with litter, remember to watch out for pink pirates!"
+        
         display.announce (description) 
+        if self.found_by_shore != None:
+            description =  f" You see a massive {self.found_by_shore.name} by the distant water."
+        if self.found_in_litter != None:
+            description = f" You see some pretty shiny {self.found_in_litter.name} in a pile of litter."
+        display.announce (description)
     def process_verb (self, verb, cmd_list, nouns):
         if (verb == "south"): #fix the process verbs to do what I want
             display.announce ("you travel south and see a clean beach ahead")
             config.the_player.next_loc = self.main_location.locations["beach"]
         elif (verb == "north"):
-            display.announce ("you walk to the edge of the beach and clean up some litter on the way")
+            message = "you walk to the edge of the beach and clean up some litter on the way"
+            display.announce(message)
         elif (verb == "east"):
             display.announce ("you take your path back to the rocky shore.")
             config.the_player.next_loc = self.main_location.locations["rocky shore"]
@@ -234,22 +231,23 @@ class NorthernShore (location.SubLocation): #sublocation 4
         elif (verb == "stay"):
             display.announce("You chose to stay, wise choice")
             config.the_player.go = True
+            
 
         if verb == "take":
-            if self.found_by_shore == None and self.found_in_litter == None:
+            if self.found_by_shore == None and self.found_by_shore == None:
                 display.announce ("You don't see anything to take.")
             elif len(cmd_list) > 1:
                 at_least_one = False #Track if you pick up an item, print message if not.
                 item = self.found_by_shore
                 if item != None and (cmd_list[1] == item.name or cmd_list[1] == "all"):
-                    display.announce(f"You take the {item.name} from the ground.")
+                    display.announce(f"You take the {item.name} from the ground, it looks too old  and water-logged to work.")
                     config.the_player.add_to_inventory([item])
                     self.found_by_shore = None
                     config.the_player.go = True
                     at_least_one = True
                 item = self.found_in_litter
                 if item != None and (cmd_list[1] == item.name or cmd_list[1] == "all"):
-                    display.announce(f"You pick up the {item.name} out of the pile of litter... ...it is shiny and pretty and pink.")
+                    display.announce(f"You pick up the {item.name} out of the pile of litter. It's pretty!")
                     config.the_player.add_to_inventory([item])
                     self.found_in_litter = None
                     config.the_player.go = True
@@ -289,50 +287,51 @@ class LetterGuessingGame (event.Event):
     #display.announce("a scary monster approaches, it looks menacing")
     def __init__ (self):
         self.name = "Letter Guessing Game"
-
+        self.result = {}
     def inflictDamage(self):
         c = random.choice(config.the_player.get_pirates())
         if (c.isLucky() == True):
                     self.result["message"] = "luckly, the attacker missed"
         else:
-            self.result["message"] = f"{c.get_name()} is attacked by the Leter Monster."
+            self.result["message"] = f"{c.get_name()} is attacked by the Letter Monster."
             if (c.inflict_damage (5, "Killed by the Letter Monster")): #what instead of self.seagulls
                 self.result["message"] = f".. {c.get_name()} is slain by the Letter Monster!"
                 self.cleanup_pirates()
 
     def process (self, world):
-        letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-        randLetterIndex=(random.choice(range(len(letters))))
-        display.announce('The scary monster wants you to try and guess what letter it is thinking of')
-        display.announce("You can try and fight, but it won't do much")
+        randomint = random.randint(1,10)
+        display.announce('The scary monster wants you to try and guess what number it is thinking of')
+        #display.announce("You can try and fight, but it won't do much")
         guess = display.get_text_input("Guess now: ")
+        guessint = int(guess)
         n = 0
 
-        if guess in letters: 
-            guessIndex = letters.index(guess)
-            while guessIndex!=randLetterIndex:
-                min = 1
-                uplim = 5
     
-                if guessIndex < randLetterIndex: #if the guess is too 'soon' in the alphabet
-                    display.announce("Incorrect! Your guess is before mine in the alphabet") #figure out how to take damage, probably have tp create a combat monster
-                    display.announce("Pick again loser, or keep losing health. Up to you!")
-                    self.inflictDamage()
-                    guess = display.get_text_input("Guess Again: ") 
-                    n+=1
-                    
-                elif guessIndex > randLetterIndex: #guess is too 'late' in the alphabet, take damage
-                    display.announce("Incorrect! Your guess is after mine in the alphabet moron!")
-                    self.inflictDamage()
-                    guess = display.get_text_input("Guess Again:")
-                    n+=1
-                    
-                else:
-                    display.announce("Rats!!! You Guessed correctly!")
-                    display.announce("Go east before I change my mind... NOW!!!")
-                    n+=1
-                    display.announce()
+        if guessint < randomint: 
+            display.announce("Incorrect! Your guess is too low") #figure out how to take damage, probably have tp create a combat monster
+            display.announce("The letter monster attacks and deals 5 damage.")
+            display.announce("Pick again loser, or keep losing health. Up to you!")
+            self.inflictDamage()
+            guess = display.get_text_input("Guess Again: ") 
+            guessint = int(guess)
+            n+=1
+            
+        elif guessint > randomint: 
+            display.announce("Incorrect! Your guess is too high moron!")
+            display.announce("The letter monster attacks and deals 5 damage.")
+            self.inflictDamage()
+            guess = display.get_text_input("Guess Again:")
+            guessint = int(guess)
+            n+=1
+            
+        else:
+            display.announce("Rats!!! You Guessed correctly!")
+            display.announce("Go east before I change my mind... NOW!!!")
+            n+=1
+            display.announce('------------------------------------')
         result = {}
+        display.announce("Rats!!! You Guessed correctly!")
+        display.announce("Go east before I change my mind... NOW!!!")
         msg = (f'It took you {n} amount of tries!')
         result["message"] = msg
         result["newevents"] = [ self ]
